@@ -1,7 +1,7 @@
 PLUGIN.Title = "Portals 2"
 PLUGIN.Description = "Lets you place teleportation portals, and assign access to them by flags."
 PLUGIN.Author = "greyhawk, Gliktch"
-PLUGIN.Version = "0.2.4"
+PLUGIN.Version = "0.2.5"
 
 function PLUGIN:Init()
     print("Loading Portals 2 Mod...")
@@ -174,7 +174,7 @@ function PLUGIN:updatePortal(name, code, x, y, z, flag)
 end
 
 function PLUGIN:printPortal(portal)
-    return ( portal.Name .. " (" .. (portal.Code == "aa") and "Entry" or "Exit" .. "), " .. self:printPortalCoords(portal) .. ((portal.Flag) and ", Code Required: " .. portal.Flag or ", Public Access.") )
+    return ( portal.Name .. " (" .. ((portal.Code == "aa") and "Entry" or "Exit") .. "), " .. self:printPortalCoords(portal) .. ((portal.Flag) and ", Code Required: " .. portal.Flag or ", Public Access.") )
 end
 
 function PLUGIN:printPortalCoords(portal)
