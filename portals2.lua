@@ -1,10 +1,10 @@
 PLUGIN.Title = "Portals 2"
 PLUGIN.Description = "Lets you place teleportation portals, and assign access to them by flags."
 PLUGIN.Author = "greyhawk, Gliktch"
-PLUGIN.Version = "0.1"
+PLUGIN.Version = "0.2"
 
 function PLUGIN:Init()
-    print("Loading Portals 2 Mod... (custom3.lua)")
+    print("Loading Portals 2 Mod...")
     self.Radius = 10
 	self.DataFile = util.GetDatafile( "portals2" )
 	local txt = self.DataFile:GetText()
@@ -13,6 +13,9 @@ function PLUGIN:Init()
 	else
 		self.Data = {}
 	end
+    self:AddChatCommand( "go", self.cmdGo )
+    self:AddChatCommand( "goset", self.cmdGoSet )
+    self:AddChatCommand( "gohelp", self.cmdGoHelp )
 end
 
 function PLUGIN:PostInit()
@@ -20,7 +23,7 @@ function PLUGIN:PostInit()
     if (self.oxminPlugin) then
         self.FLAG_GOALL = oxmin.AddFlag("goall")
         self.oxminPlugin:AddExternalOxminChatCommand(self, "go", { }, self.cmdGo)
-        self.oxminPlugin:AddExternalOxminChatCommand(self, "goset", { }, self.cmdGoSet)
+        self.oxminPlugin:AddExternalOxminChatCommand(self, "goset", { self.FLAG_GOALL }, self.cmdGoSet)
         self.oxminPlugin:AddExternalOxminChatCommand(self, "gohelp", { }, self.cmdGoHelp)
     end
     self.flagsPlugin = plugins.Find("flags")
@@ -37,7 +40,7 @@ function PLUGIN:HasFlag(netuser, flag)
     return false
 end
 
-function PLUGIN:cmdGo( netuser, cmd, args )
+function PLUGIN:cmdGo( netuser, args )
     -- get netuser coords
     local coords = netuser.playerClient.lastKnownPosition
     
@@ -77,7 +80,7 @@ function PLUGIN:cmdGo( netuser, cmd, args )
     end
 end
 
-function PLUGIN:cmdGoSet( netuser, cmd, args )
+function PLUGIN:cmdGoSet( netuser, args )
     if (not self:HasFlag(netuser, "goall")) then
         rust.Notice( netuser, "You don't have permission to set portals." )
         return
