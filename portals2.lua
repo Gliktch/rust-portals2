@@ -1,7 +1,7 @@
 PLUGIN.Title = "Portals 2"
 PLUGIN.Description = "Lets you place teleportation portals, and assign access to them by flags."
 PLUGIN.Author = "greyhawk, Gliktch"
-PLUGIN.Version = "0.2"
+PLUGIN.Version = "0.2.1"
 
 function PLUGIN:Init()
     print("Loading Portals 2 Mod...")
@@ -182,11 +182,11 @@ function PLUGIN:printPortalCoords(portal)
 end
 
 function PLUGIN:printCoords(x, y, z)
-    return ( "x" .. tostring(x) .. " y" .. tostring(y) .. " z" .. tostring(z) )
+    return ( "x" .. tostring(self:round(x,3)) .. " y" .. tostring(self:round(y,3)) .. " z" .. tostring(self:round(z,3)) )
 end
 
 function PLUGIN:printCoord(coord)
-    return ( "x" .. coord.x .. " y" .. coord.y .. " z" .. coord.z )
+    return ( "x" .. self:round(coord.x,3) .. " y" .. self:round(coord.y,3) .. " z" .. self:round(coord.z,3) )
 end
 
 function PLUGIN:cmdGoHelp( netuser )
@@ -201,10 +201,15 @@ function PLUGIN:cmdGoHelp( netuser )
 end
 
 function PLUGIN:SendHelpText( netuser )
-    rust.SendChatToUser( netuser, "Use /go to travel through a portal, if you've been given access." )
+    rust.SendChatToUser( netuser, "Use /go to travel through a portal, if you're close by and you've been given access." )
 end
 
 function PLUGIN:Save()
-	self.DataFile:SetText( json.encode( self.Data ) )
-	self.DataFile:Save()
+    self.DataFile:SetText( json.encode( self.Data ) )
+    self.DataFile:Save()
+end
+
+function PLUGIN:round(num, dec)
+  local pow = 10^(dec or 0)
+  return math.floor(num * pow + 0.5) / pow
 end
