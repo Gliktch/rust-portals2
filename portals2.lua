@@ -1,7 +1,7 @@
 PLUGIN.Title = "Portals 2"
 PLUGIN.Description = "Lets you place teleportation portals, and assign access to them by flags."
 PLUGIN.Author = "greyhawk, Gliktch"
-PLUGIN.Version = "0.2.1"
+PLUGIN.Version = "0.2.3"
 
 function PLUGIN:Init()
     print("Loading Portals 2 Mod...")
@@ -47,7 +47,7 @@ function PLUGIN:cmdGo( netuser, args )
     -- find portal
     local portal = self:getPortalXYZ(coords.x, coords.y, coords.z)
     if (not portal) then
-        rust.Notice( netuser, "No go spot around " .. self:printCoord(coords))
+        rust.Notice( netuser, "Not close enough!" )
         return
     else
         rust.SendChatToUser( netuser, "Found " .. self:printPortal(portal) )
@@ -76,7 +76,7 @@ function PLUGIN:cmdGo( netuser, args )
         coords.y = outPortal.Y
         coords.z = outPortal.Z
         rust.ServerManagement():TeleportPlayer(netuser.playerClient.netPlayer, coords)
-        rust.SendChatToUser( netuser, "Teleported to " .. self:printPortal(outPortal) )
+        rust.SendChatToUser( netuser, "Access Granted.  Welcome to " .. self:printPortal(outPortal) )
     end
 end
 
@@ -174,7 +174,7 @@ function PLUGIN:updatePortal(name, code, x, y, z, flag)
 end
 
 function PLUGIN:printPortal(portal)
-    return ( "Portal " .. portal.Name .. " . " .. portal.Code .. ": " .. self:printPortalCoords(portal) .. ((portal.Flag) and " / Flag: " .. portal.Flag or " / Public") )
+    return ( portal.Name .. " (" .. portal.Code .. "), " .. self:printPortalCoords(portal) .. ((portal.Flag) and ", Code Required: " .. portal.Flag or ", Public Access.") )
 end
 
 function PLUGIN:printPortalCoords(portal)
@@ -182,11 +182,11 @@ function PLUGIN:printPortalCoords(portal)
 end
 
 function PLUGIN:printCoords(x, y, z)
-    return ( "x" .. tostring(self:round(x,3)) .. " y" .. tostring(self:round(y,3)) .. " z" .. tostring(self:round(z,3)) )
+    return ( "{" .. tostring(self:round(x,1)) .. "," .. tostring(self:round(y,1)) .. "," .. tostring(self:round(z,1)) .. "}" )
 end
 
 function PLUGIN:printCoord(coord)
-    return ( "x" .. self:round(coord.x,3) .. " y" .. self:round(coord.y,3) .. " z" .. self:round(coord.z,3) )
+    return ( "{" .. self:round(coord.x,1) .. "," .. self:round(coord.y,1) .. "," .. self:round(coord.z,1) .. "}" )
 end
 
 function PLUGIN:cmdGoHelp( netuser )
